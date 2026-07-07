@@ -1,5 +1,11 @@
 # Engineering Discipline — LLM 编码纪律指南
 
+[![MIT License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Rules](https://img.shields.io/badge/rules-10-brightgreen)](CLAUDE.md)
+[![Tools](https://img.shields.io/badge/tools-Claude%20%7C%20Cursor%20%7C%20Codex%20%7C%20WorkBuddy-orange)](https://github.com/murphycheng-24/coding-guidelines)
+[![GitHub stars](https://img.shields.io/github/stars/murphycheng-24/coding-guidelines?style=social)](https://github.com/murphycheng-24/coding-guidelines/stargazers)
+[![Last Commit](https://img.shields.io/github/last-commit/murphycheng-24/coding-guidelines)](https://github.com/murphycheng-24/coding-guidelines/commits)
+
 一个 `CLAUDE.md` 文件，包含 10 条工程纪律规则 — **基于 [Karpathy 4 条行为准则](https://x.com/karpathy)的增强版**。工具无关 — 适用于 **Claude Code**、**Codex**、**Cursor**、**WorkBuddy** 及任何 LLM 编码助手。
 
 [English](./README.md) | 简体中文

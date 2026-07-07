@@ -1,5 +1,11 @@
 # Engineering Discipline — LLM Coding Guidelines
 
+[![MIT License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Rules](https://img.shields.io/badge/rules-10-brightgreen)](CLAUDE.md)
+[![Tools](https://img.shields.io/badge/tools-Claude%20%7C%20Cursor%20%7C%20Codex%20%7C%20WorkBuddy-orange)](https://github.com/murphycheng-24/coding-guidelines)
+[![GitHub stars](https://img.shields.io/github/stars/murphycheng-24/coding-guidelines?style=social)](https://github.com/murphycheng-24/coding-guidelines/stargazers)
+[![Last Commit](https://img.shields.io/github/last-commit/murphycheng-24/coding-guidelines)](https://github.com/murphycheng-24/coding-guidelines/commits)
+
 A single `CLAUDE.md` file with 10 engineering discipline rules — an **enhanced version** of [Andrej Karpathy's 4 behavioral guidelines](https://x.com/karpathy) for LLM coding. Tool-agnostic — works across **Claude Code**, **Codex**, **Cursor**, **WorkBuddy**, and any LLM coding assistant.
 
 English | [简体中文](./README.zh.md)
