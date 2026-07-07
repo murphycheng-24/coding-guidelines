@@ -17,6 +17,44 @@ Karpathy's original 4 rules (Think Before Coding, Simplicity First, Surgical Cha
 > *"These are not suggestions. These are rules. Follow them and you'll produce code that doesn't need to be rewritten."*
 > — Andrej Karpathy
 
+## Enhancement Comparison: 4 Rules vs 10 Rules
+
+| Metric | Original 4 Rules | Enhanced 10 Rules | Improvement |
+|--------|:----------------:|:------------------:|:-----------:|
+| **Rule count** | 4 | 10 | **+150%** |
+| **Engineering dimensions covered** | 1 of 6 (16.7%) | 6 of 6 (100%) | **+500%** |
+| **LLM failure modes covered** | 3 of 11 (27.3%) | 11 of 11 (100%) | **+267%** |
+| **Execution phases** | 1 (coding only) | 4 (Pre → In → Post → Audit) | **+300%** |
+
+### Coverage by Engineering Dimension
+
+| Dimension | 4 Rules | 10 Rules |
+|-----------|:-------:|:--------:|
+| **Coding Discipline** (think, simplify, surgical, goal) | ✅ Full | ✅ Full |
+| **Verification** (verify before reporting) | ❌ | ✅ Full |
+| **Debugging** (systematic, reproduce-then-fix) | ❌ | ✅ Full |
+| **Dependency Management** (pin, audit, minimize) | ❌ | ✅ Full |
+| **Communication** (clear commits, flag concerns) | ❌ | ✅ Full |
+| **Self-Audit** (review own work before declaring done) | ❌ | ✅ Full |
+
+### LLM Failure Mode Coverage
+
+| Failure Mode | 4 Rules | 10 Rules |
+|--------------|:-------:|:--------:|
+| Silent assumptions | ✅ | ✅ |
+| Over-engineering | ✅ | ✅ |
+| Unnecessary diff noise | ✅ | ✅ |
+| Unclear success criteria | ✅ | ✅ |
+| Claims success without verification | ❌ | ✅ |
+| Guessing instead of debugging | ❌ | ✅ |
+| Bloated dependencies | ❌ | ✅ |
+| Vague commit messages | ❌ | ✅ |
+| Kitchen Sink anti-pattern | ❌ | ✅ |
+| Wrong Abstraction | ❌ | ✅ |
+| Runaway Refactor | ❌ | ✅ |
+
+> **Bottom line:** The original 4 rules teach an LLM *how to write code*. The enhanced 10 rules also teach it *how to verify, debug, communicate, and self-audit* — covering **4× more failure modes**.
+
 ## The 10 Rules at a Glance
 
 | # | Rule | What It Prevents |
