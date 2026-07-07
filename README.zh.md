@@ -1,12 +1,12 @@
 # Engineering Discipline — LLM 编码纪律指南
 
-一个 `CLAUDE.md` 文件，包含 10 条工程纪律规则，提炼自 [Andrej Karpathy 在 Anthropic 使用的内部 CLAUDE.md](https://x.com/karpathy)（2026 年 6 月）。工具无关 — 适用于 **Claude Code**、**Codex**、**Cursor**、**WorkBuddy** 及任何 LLM 编码助手。
+一个 `CLAUDE.md` 文件，包含 10 条工程纪律规则 — **基于 [Karpathy 4 条行为准则](https://x.com/karpathy)的增强版**。工具无关 — 适用于 **Claude Code**、**Codex**、**Cursor**、**WorkBuddy** 及任何 LLM 编码助手。
 
 [English](./README.md) | 简体中文
 
 ## 为什么需要它
 
-社区已知的是 4 条规则版本（编码前思考、简洁优先、精准修改、目标驱动执行）。这是**完整的 10 条内部版本** — 它不仅教模型如何写代码，还教它如何**自我验证**、系统化调试、管理依赖、清晰沟通，以及在宣布完成前进行自我审计。
+Karpathy 原版的 4 条规则（编码前思考、简洁优先、精准修改、目标驱动执行）是一个很好的起点。这个增强版将其扩展为 **10 条规则** — 新增了验证、调试、依赖管理、沟通和自我审计 — 不仅教模型如何写代码，还教它如何**自我验证**。
 
 > *"这些不是建议。这些是规则。遵循它们，你产出的代码不需要重写。"*
 > — Andrej Karpathy

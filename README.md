@@ -1,12 +1,12 @@
 # Engineering Discipline — LLM Coding Guidelines
 
-A single `CLAUDE.md` file with 10 engineering discipline rules, distilled from [Andrej Karpathy's internal CLAUDE.md](https://x.com/karpathy) used at Anthropic (June 2026). Tool-agnostic — works across **Claude Code**, **Codex**, **Cursor**, **WorkBuddy**, and any LLM coding assistant.
+A single `CLAUDE.md` file with 10 engineering discipline rules — an **enhanced version** of [Andrej Karpathy's 4 behavioral guidelines](https://x.com/karpathy) for LLM coding. Tool-agnostic — works across **Claude Code**, **Codex**, **Cursor**, **WorkBuddy**, and any LLM coding assistant.
 
 English | [简体中文](./README.zh.md)
 
 ## Why This Exists
 
-The community knows the 4-rule version (Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Execution). This is the **full 10-rule internal version** — the one that also teaches the model how to **verify itself**, debug systematically, manage dependencies, communicate clearly, and self-audit before declaring done.
+Karpathy's original 4 rules (Think Before Coding, Simplicity First, Surgical Changes, Goal-Driven Execution) are a great start. This enhanced version expands them to **10 rules** — adding verification, debugging, dependency management, communication, and self-audit — to teach the model how to **verify itself**, not just how to write.
 
 > *"These are not suggestions. These are rules. Follow them and you'll produce code that doesn't need to be rewritten."*
 > — Andrej Karpathy

@@ -2,7 +2,7 @@
 
 > *"These are not suggestions. These are rules. Follow them and you'll produce code that doesn't need to be rewritten."* — Andrej Karpathy, CLAUDE.md (internal, June 2026)
 
-Based on the complete 10-rule internal CLAUDE.md used by Karpathy at Anthropic. Tool-agnostic — works across Claude Code, Codex, Cursor, and any LLM coding assistant. The key difference from the community 4-rule version: this version teaches the model how to **verify itself**, not just how to write.
+An enhanced version of Andrej Karpathy's 4 behavioral guidelines for LLM coding, expanded to 10 engineering discipline rules. Tool-agnostic — works across Claude Code, Codex, Cursor, and any LLM coding assistant. The key difference from the original 4-rule version: this version teaches the model how to **verify itself**, not just how to write.
 
 **Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks (simple typo fixes, obvious one-liners), use judgment.
 

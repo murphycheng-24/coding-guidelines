@@ -1,6 +1,6 @@
 {
   "name": "engineering-discipline",
-  "description": "Engineering discipline rules distilled from Andrej Karpathy's internal CLAUDE.md (June 2026 leak, 10 rules). Tool-agnostic guidelines to reduce common LLM coding mistakes across Claude Code, Codex, Cursor, and any LLM coding assistant.",
+  "description": "Enhanced version of Andrej Karpathy's 4 behavioral guidelines for LLM coding, expanded to 10 engineering discipline rules. Tool-agnostic — works across Claude Code, Codex, Cursor, and any LLM coding assistant.",
   "version": "1.0.0",
   "author": {
     "name": "murphycheng-24"
