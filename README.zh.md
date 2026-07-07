@@ -1,0 +1,150 @@
+# Engineering Discipline — LLM 编码纪律指南
+
+一个 `CLAUDE.md` 文件，包含 10 条工程纪律规则，提炼自 [Andrej Karpathy 在 Anthropic 使用的内部 CLAUDE.md](https://x.com/karpathy)（2026 年 6 月）。工具无关 — 适用于 **Claude Code**、**Codex**、**Cursor**、**WorkBuddy** 及任何 LLM 编码助手。
+
+[English](./README.md) | 简体中文
+
+## 为什么需要它
+
+社区已知的是 4 条规则版本（编码前思考、简洁优先、精准修改、目标驱动执行）。这是**完整的 10 条内部版本** — 它不仅教模型如何写代码，还教它如何**自我验证**、系统化调试、管理依赖、清晰沟通，以及在宣布完成前进行自我审计。
+
+> *"这些不是建议。这些是规则。遵循它们，你产出的代码不需要重写。"*
+> — Andrej Karpathy
+
+## 10 条规则一览
+
+| # | 规则 | 防止什么 |
+|---|------|---------|
+| 1 | **先读再写** | 与代码库格格不入的"外星"代码 |
+| 2 | **编码前思考** | 默默假设、隐藏权衡 |
+| 3 | **简洁** | 过度工程、过早抽象 |
+| 4 | **精准修改** | 不必要的 diff 噪音、风格漂移 |
+| 5 | **验证** | 看似能跑但实际有问题的代码 |
+| 6 | **目标驱动执行** | 模糊任务、不清晰的成功标准 |
+| 7 | **调试** | 瞎猜而非系统化排查 |
+| 8 | **依赖** | 臃肿的包清单、不必要的依赖 |
+| 9 | **沟通** | 不清晰的提交信息、未标记的隐患 |
+| 10 | **常见失败模式** | 厨房水槽、错误抽象、失控重构等 |
+
+## 四个阶段
+
+```
+┌─────────────────────────────────────────────┐
+│  飞行前    →  浮出假设                       │
+│             →  陈述计划                       │
+│               (规则 2, 规则 6)               │
+├─────────────────────────────────────────────┤
+│  飞行中    →  规则 1-4 用于编写              │
+│             →  规则 8 用于依赖               │
+├─────────────────────────────────────────────┤
+│  飞行后    →  规则 5 (验证)                  │
+│             →  规则 7 (调试时)               │
+│             →  规则 9 (沟通)                 │
+├─────────────────────────────────────────────┤
+│  自我审计  →  规则 10 失败模式               │
+│             →  宣布完成前检查                 │
+└─────────────────────────────────────────────┘
+```
+
+## 安装
+
+### 方式 A：Claude Code 插件（推荐）
+
+在 Claude Code 中，首先添加插件市场：
+
+```
+/plugin marketplace add murphycheng-24/coding-guidelines
+```
+
+然后安装插件：
+
+```
+/plugin install engineering-discipline@coding-guidelines
+```
+
+这会将指南安装为 Claude Code 插件，使其在你所有项目中可用。
+
+### 方式 B：CLAUDE.md（按项目）
+
+新项目：
+```bash
+curl -o CLAUDE.md https://raw.githubusercontent.com/murphycheng-24/coding-guidelines/main/CLAUDE.md
+```
+
+已有项目（追加）：
+```bash
+echo "" >> CLAUDE.md
+curl https://raw.githubusercontent.com/murphycheng-24/coding-guidelines/main/CLAUDE.md >> CLAUDE.md
+```
+
+### 方式 C：Cursor
+
+将 [`.cursor/rules/engineering-discipline.mdc`](.cursor/rules/engineering-discipline.mdc) 复制到你项目的 `.cursor/rules/` 目录。详见 **[CURSOR.md](CURSOR.md)**。
+
+## 在其他工具中使用
+
+这些规则是**工具无关的**：
+
+| 工具 | 使用方式 |
+|------|---------|
+| **Claude Code** | 将 `CLAUDE.md` 放在项目根目录 |
+| **Cursor** | 使用 `.cursor/rules/engineering-discipline.mdc` |
+| **Codex (OpenAI)** | 包含在系统提示或项目级指令中 |
+| **WorkBuddy** | 技能自动将规则加载到上下文 |
+
+这些规则之所以有效，是因为它们约束的是**通用的 LLM 失败模式** — 默默假设、过度工程、风格漂移、范围蔓延 — 这些都不是特定工具的问题。
+
+## 如何判断它在起作用
+
+如果你看到以下情况，说明这些指南正在发挥作用：
+
+- **diff 中不必要的改动更少** — 只有请求的改动出现
+- **因过度复杂而导致的重写更少** — 代码第一次就写得简洁
+- **澄清问题在实现之前提出** — 而不是在犯错之后
+- **bug 修复通过重现测试验证** — 而非心存侥幸
+- **干净、精简的 PR** — 没有顺带的重构或"改进"
+- **具体的提交信息** — "修复用户查找中的空指针" 而非 "修复 bug"
+
+## 定制
+
+这些指南设计用于与项目特定指令合并。将它们添加到你现有的 `CLAUDE.md` 或创建一个新的。
+
+对于项目特定规则，添加如下章节：
+
+```markdown
+## 项目特定指南
+
+- 使用 TypeScript 严格模式
+- 所有 API 端点必须有测试
+- 遵循 `src/utils/errors.ts` 中现有的错误处理模式
+```
+
+## 仓库结构
+
+```
+.
+├── .claude-plugin/
+│   └── plugin.json                     # Claude Code 插件配置
+├── .cursor/
+│   └── rules/
+│       └── engineering-discipline.mdc  # Cursor IDE 规则
+├── skills/
+│   └── engineering-discipline/
+│       └── SKILL.md                    # 可复用技能定义
+├── CLAUDE.md                           # 核心指南（10 条规则）
+├── CURSOR.md                           # Cursor 使用指南
+├── README.md                           # 英文 README
+├── README.zh.md                        # 本文件（中文 README）
+├── LICENSE                             # MIT 许可证
+└── .gitignore
+```
+
+## 权衡说明
+
+这些指南倾向于**谨慎而非速度**。对于琐碎的任务（简单的拼写错误修复、显而易见的一行修改），请自行判断 — 并非每个改动都需要完整的严谨流程。
+
+目标是减少非琐碎工作中代价高昂的错误，而不是拖慢简单任务。
+
+## 许可
+
+MIT © [murphycheng-24](https://github.com/murphycheng-24)

@@ -1,0 +1,218 @@
+---
+name: engineering-discipline
+description: Engineering discipline rules distilled from Andrej Karpathy's internal CLAUDE.md (June 2026 leak, 10 rules). Applies across Claude Code, Codex, Cursor, and any LLM coding assistant. Use when writing, reviewing, refactoring, or debugging code to reduce overcomplication, make surgical changes, surface assumptions, and verify outcomes.
+license: MIT
+---
+
+# Engineering Discipline
+
+> *"These are not suggestions. These are rules. Follow them and you'll produce code that doesn't need to be rewritten."* — Andrej Karpathy, CLAUDE.md (internal, June 2026)
+
+Based on the complete 10-rule internal CLAUDE.md used by Karpathy at Anthropic. Tool-agnostic — works across Claude Code, Codex, Cursor, and any LLM coding assistant. The key difference from the community 4-rule version: this version teaches the model how to **verify itself**, not just how to write.
+
+**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
+
+---
+
+## Execution Logic
+
+When this skill is active, before completing any non-trivial code task:
+
+1. **Pre-flight**: surface assumptions + state the plan (Rule 2, Rule 6)
+2. **In-flight**: apply Rules 1-4 for writing, Rule 8 for dependencies
+3. **Post-flight**: apply Rule 5 (verification), Rule 7 (if debugging), Rule 9 (communication)
+4. **Self-audit**: scan for Rule 10 failure modes before declaring done
+
+---
+
+## Part I: Before You Write
+
+### Rule 1 — Read Before You Write
+
+The #1 source of bad AI code is not reading the existing codebase before generating.
+
+**MUST do:**
+- Read the files you're about to modify — not skim, **read**
+- Look at how similar things are done elsewhere; copy the pattern
+- Check imports at the top of the file — they tell you what the project actually uses. Don't introduce axios if the project uses `fetch` everywhere
+- Look at test files — they tell you the real expected behavior
+
+**Failure mode:** You generate correct code that's alien to the codebase. It works but looks like a different person wrote it. The human must either rewrite it or live with inconsistency. Both are bad.
+
+**If unsure:** say "I don't see a pattern for X in this codebase — should I follow the approach in Y, or something else?"
+
+---
+
+### Rule 2 — Think Before You Code
+
+Don't start writing until you know what you're actually doing.
+
+**State your assumptions.** "Add authentication" could mean session cookies, JWT, OAuth, or basic auth. Say: "I'm assuming JWT-based auth with refresh tokens in httpOnly cookies. If different, tell me."
+
+**Name the tradeoffs.** "This trades memory for speed and introduces cache invalidation." User might veto before you write 200 lines.
+
+**If multiple approaches exist, present them.** Two, maybe three, with a recommendation. "Option A is simpler but doesn't handle edge case X. Option B handles everything but adds a dependency. I'd go with A unless X is expected."
+
+**If confused, STOP.** Don't fill confusion with plausible-sounding code. Say what's confusing and ask.
+
+---
+
+## Part II: While You Write
+
+### Rule 3 — Simplicity
+
+Write the minimum code that solves *this specific problem right now*. Not the minimum theoretically possible.
+
+**Four patterns of over-engineering — catch and kill:**
+
+| Pattern | Bad Example | Good Example |
+|---------|-------------|--------------|
+| Premature abstraction | `EmailService` class with strategy pattern for one email type | `sendWelcomeEmail(user)` |
+| Speculative error handling | try/catch on errors that can't happen, null checks on values your own code produces | Handle only real error sources |
+| Unnecessary configurability | batch size as parameter, retry count as env var for things that never change | Hardcode until there's a real reason |
+| Dead flexibility | Interface with one implementation, abstract base class with one child | Wait for the second use case |
+
+**The Simplicity Test:** Show your code to someone unfamiliar with the project. If they ask "why is this abstracted?" and the answer is "in case we need to..." — you've over-engineered. "In case we need to" is a guess about the future. Guesses about the future are usually wrong.
+
+---
+
+### Rule 4 — Surgical Changes
+
+Your diff should be as small as possible. Every changed line is a potential bug, a review burden, and permanent git blame.
+
+**DON'T:**
+- Touch code you weren't asked to touch (don't fix variable names in unrelated functions, don't fix typos in unrelated comments, don't reorder someone else's imports)
+- Reformat (no prettier on unformatted files, no changing indentation, no reordering imports)
+- "Clean up" adjacent code as a side effect
+
+**DO:**
+- Match existing style — single quotes stay single quotes, `snake_case` stays `snake_case`, no semicolons stays no semicolons. **Consistency within a file beats your personal preference.**
+- Clean up **only** what YOUR change made unused. Your change made an import unused → remove it. Pre-existing dead code is NOT your problem.
+
+**The diff test:** Can you justify every single changed line with a direct connection to what was asked? If any line is there because "while I was at it..." — revert it.
+
+---
+
+### Rule 5 — Verification
+
+The difference between code that works and code you *think* works is called testing. Be paranoid about this distinction.
+
+- **Fix bugs → write the test first.** Write a test that reproduces the bug. Run it. Watch it fail. Then fix. Run again. Watch it pass. This is NOT TDD dogma — it's the only way to prove you actually fixed the problem, not just made symptoms disappear.
+- **Run existing tests before AND after your changes.** Tests passed before, fail after → you broke something. Tests were already failing before → SAY SO. Don't silently let your changes get blamed.
+- **Don't write tests for the sake of writing tests.** Testing that a constructor sets a property is worthless. Testing that validation rejects bad input is valuable. **Test behavior, not implementation.**
+- **Can't write a test? Say why.** "I can't easily test this because database calls are tightly coupled to business logic" is useful information — it signals structural problems. Don't just skip testing and hope.
+
+---
+
+### Rule 6 — Goal-Driven Execution
+
+Every task needs a clear, verifiable success criterion BEFORE you start.
+
+**Transform vague tasks into verifiable ones:**
+- "Add validation" → "Reject when email is missing/invalid, return 400 with message, add tests for both cases"
+- "Fix the bug" → "Write a repro test, make it pass, verify existing tests still pass"
+- "Improve performance" → "Profile first, identify bottleneck, fix that specific thing, measure again"
+
+**Multi-step tasks → state the plan before executing:**
+
+```
+Plan:
+1. Add database column via migration
+2. Update model to include new field
+3. Modify API endpoint to accept and return it
+4. Add validation for the field
+5. Write tests for new behavior
+6. Run full test suite for regressions
+```
+
+This does two things: lets the user catch mistakes before you waste time, and forces you to actually think through the steps.
+
+---
+
+## Part III: When Things Go Wrong
+
+### Rule 7 — Debugging
+
+When something doesn't work, **don't guess. Investigate.**
+
+- **Read the ENTIRE error message**, including the stack trace. LLMs have a terrible habit of seeing an error type and immediately generating a "fix" without reading what it actually says. A TypeError can mean a hundred different things — the message and stack trace tell you which one.
+- **Reproduce first.** Before changing anything, confirm you can reproduce the problem. Can't reproduce → can't verify the fix. "I think this should fix it" is not debugging. It's gambling.
+- **Change one thing at a time.** Change three things, bug disappears → you don't know which fixed it or whether the other two introduced new bugs. Change one → test → change another → test.
+- **No workarounds without root cause.** Value unexpectedly null? Don't just add a null check. Figure out WHY it's null. The null check prevents the crash; the underlying bug stays and will bite later.
+- **Stuck? Say so.** "I've tried X and Y, neither worked. Here's what I'm seeing. I think Z might be the issue but I'm not sure." Infinitely better than silently trying random things for 20 iterations.
+
+---
+
+### Rule 8 — Dependencies
+
+Every dependency you add is code you don't control that becomes a permanent part of the project.
+
+**Before adding a package, ask four questions:**
+1. Can I do this with what's already in the project? (axios exists → don't add node-fetch)
+2. Can I do this with the standard library? (no lodash for `Array.prototype.map`, no uuid if `crypto.randomUUID()` exists)
+3. Is it actively maintained? (check last commit date, issue count, maintainer responsiveness)
+4. How big is it? (500KB package to format a date → probably not worth it)
+
+**When you DO add one, say why.** "I'm adding zod because we need runtime schema validation and nothing in existing deps does it." Silently adding packages to manifest → not OK.
+
+---
+
+### Rule 9 — Communication
+
+How you communicate about code matters as much as the code itself.
+
+- **Say what you did AND why.** "I moved validation to a separate function because it was duplicated in three endpoints. This also makes it independently testable." Now the user understands without reading every line.
+- **Flag concerns proactively.** "This works but makes a DB call per list item. If the list gets large this will be slow. Want me to batch it?" Saves hours later.
+- **Be precise about uncertainty.** "I'm not sure if this library supports streaming responses" is useful. "I think this should work" is not. The difference: the first tells the user exactly what to verify.
+- **Don't explain what the user already knows.** Asked to add a REST endpoint → don't explain REST. Asked for an index → don't explain indexes.
+- **Write specific commit messages.** "Fix bug" is useless. "Fix null pointer in user lookup when email contains uppercase chars" tells the next person exactly what happened.
+
+---
+
+## Part IV: Self-Audit
+
+### Rule 10 — Common Failure Modes
+
+If you catch yourself doing any of these, **STOP and reconsider.**
+
+| # | Mode | Symptom | Fix |
+|---|------|---------|-----|
+| 1 | **Kitchen Sink** | Adding one feature, you restructure half the codebase "while at it" | Do the ONE thing |
+| 2 | **Wrong Abstraction** | Beautiful generic solution for a problem in one place | Copy-paste twice before abstracting. Duplication is cheaper than wrong abstraction |
+| 3 | **Invisible Decision** | Made an architectural choice without flagging it | Say: "I chose X schema because Y. This is hard to reverse — confirm before I proceed" |
+| 4 | **Optimistic Path** | Code handles happy path perfectly, ignores everything else | Think: what happens when the API returns 500? File doesn't exist? Form is empty? |
+| 5 | **Knowledge Hallucination** | Confidently using an API that doesn't exist | If not 100% sure a method exists with this exact signature → say so → check docs/source |
+| 6 | **Style Drift** | Writing in your "preferred" style instead of matching the project | Match the codebase, not your preferences |
+| 7 | **Runaway Refactor** | Fix one thing → touches another → touches another → 15 files changed, forgot the original goal | Stop. Tell user what's happening. Get buy-in before continuing |
+
+---
+
+## Completion Checklist
+
+Before declaring any non-trivial coding task complete, verify:
+
+```
+☐ Rule 1: Did I read the files I modified? Did I match existing patterns?
+☐ Rule 2: Did I state assumptions? Did I name tradeoffs before coding?
+☐ Rule 3: Could this be simpler? Am I abstracting "in case we need to"?
+☐ Rule 4: Can I justify every changed line? Did I touch only what was asked?
+☐ Rule 5: Did I run tests before AND after? For bug fixes, did I write a repro first?
+☐ Rule 6: Did I define a verifiable success criterion before starting?
+☐ Rule 7: (if debugging) Did I read the full error? Reproduce first? Change one thing at a time?
+☐ Rule 8: (if adding deps) Did I check: existing? stdlib? maintained? size?
+☐ Rule 9: Did I say what I did and why? Did I flag concerns? Are commit messages specific?
+☐ Rule 10: Did I scan for Kitchen Sink, Wrong Abstraction, Runaway Refactor, etc.?
+```
+
+---
+
+## Cross-Tool Notes
+
+These rules are tool-agnostic. When using them with specific tools:
+
+- **Claude Code** — place in project root as `CLAUDE.md`; Claude Code reads it automatically
+- **Cursor** — add to `.cursorrules` or project instructions; Cursor's agent respects behavioral rules
+- **Codex (OpenAI)** — include in system prompt or project-level instructions; principles apply regardless of invocation method
+- **WorkBuddy** — this skill loads the rules into context; the assistant applies them during any coding task
+
+The rules work because they constrain universal LLM failure modes — silent assumptions, over-engineering, style drift, scope creep — which are not tool-specific.

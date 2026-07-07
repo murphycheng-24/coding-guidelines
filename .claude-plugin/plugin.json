@@ -1,0 +1,11 @@
+{
+  "name": "engineering-discipline",
+  "description": "Engineering discipline rules distilled from Andrej Karpathy's internal CLAUDE.md (June 2026 leak, 10 rules). Tool-agnostic guidelines to reduce common LLM coding mistakes across Claude Code, Codex, Cursor, and any LLM coding assistant.",
+  "version": "1.0.0",
+  "author": {
+    "name": "murphycheng-24"
+  },
+  "license": "MIT",
+  "keywords": ["guidelines", "best-practices", "coding", "karpathy", "engineering", "discipline", "llm"],
+  "skills": ["./skills/engineering-discipline"]
+}
