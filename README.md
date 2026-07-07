@@ -52,6 +52,43 @@ Karpathy's original 4 rules (Think Before Coding, Simplicity First, Surgical Cha
 └─────────────────────────────────────────────┘
 ```
 
+## Before & After
+
+### Without rules (common LLM behavior)
+
+**User**: *"Add a search feature to the user list"*
+
+**LLM without guidelines**:
+- Creates a new `SearchService` class with 3 layers of abstraction
+- Adds `lodash`, `fuse.js`, and `rxjs` as dependencies
+- Refactors the existing `UserList` component to use the new service
+- Changes 8 files, 400+ lines of diff
+- ✅ Search works... but the PR is a nightmare to review
+
+**With rules applied**:
+
+| Rule | What Changes |
+|------|-------------|
+| **Rule 2** (Think Before You Code) | LLM states: *"I'll add a filter function to the existing UserList. No new deps needed."* |
+| **Rule 3** (Simplicity) | Uses the existing `useState` + `filter()` — 15 lines, not 400 |
+| **Rule 4** (Surgical Changes) | Only touches `UserList.tsx` — no drive-by refactoring |
+| **Rule 8** (Dependencies) | Zero new dependencies added |
+| **Rule 5** (Verification) | Runs the existing test suite before declaring done |
+
+**Result**: 1 file changed, 15 lines added, 0 new dependencies, clean PR.
+
+### Another example: Bug Fix
+
+**Without rules**: LLM guesses at the fix, adds a `try/catch` to suppress the error, and marks it "fixed."
+
+**With rules applied**:
+1. **Rule 7** (Debugging) — Reproduce the error first: *"The crash happens when `user.profile` is null"*
+2. **Rule 5** (Verification) — Write a test that reproduces the bug, then fix it so the test passes
+3. **Rule 4** (Surgical Changes) — Only change the null check, don't refactor the whole function
+4. **Rule 9** (Communication) — Commit message: *"Fix null pointer when user.profile is undefined"*
+
+---
+
 ## Install
 
 ### Option A: Claude Code Plugin (recommended)
@@ -141,6 +178,8 @@ For project-specific rules, add sections like:
 │       └── SKILL.md                    # Reusable skill definition
 ├── CLAUDE.md                           # Core guidelines (the 10 rules)
 ├── CURSOR.md                           # Cursor setup guide
+├── CONTRIBUTING.md                     # Contribution guidelines
+├── CHANGELOG.md                        # Version history
 ├── README.md                           # This file
 ├── README.zh.md                        # Chinese README
 ├── LICENSE                             # MIT
